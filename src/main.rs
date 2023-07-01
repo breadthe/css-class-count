@@ -1,3 +1,4 @@
+use std::collections::HashMap;
 use std::env;
 use std::fs::File;
 use std::io::Read;
@@ -27,22 +28,21 @@ fn main() {
         }
     }
 
-    // Extract unique classes using regex
+    // Extract unique classes using regex and count them
     let class_regex = Regex::new(r"\.([a-zA-Z0-9_-]+)").unwrap();
-    let mut unique_classes = Vec::new();
+    let mut class_counts = HashMap::new();
     for class in class_regex.captures_iter(&css_content) {
         let class_name = &class[1];
-        if !unique_classes.contains(&class_name.to_string()) {
-            unique_classes.push(class_name.to_string());
-        }
+        let count = class_counts.entry(class_name.to_string()).or_insert(0);
+        *count += 1;
     }
 
-    // Print the unique classes
-    println!("Unique Classes:");
-    for class in &unique_classes {
-        println!("{}", class);
+    // Print the unique classes and their counts
+    println!("Class Counts:");
+    for (class_name, count) in &class_counts {
+        println!("{}: {}", class_name, count);
     }
 
     // Print the total count
-    println!("Total Unique Classes: {}", unique_classes.len());
+    println!("Total Unique Classes: {}", class_counts.len());
 }
