@@ -15,12 +15,17 @@ fn main() {
 
     // Read the CSS file
     let mut css_content = String::new();
+    let file_size_bytes: u64;
     match File::open(file_path) {
         Ok(mut file) => {
             if let Err(err) = file.read_to_string(&mut css_content) {
                 eprintln!("Error reading file: {}", err);
                 return;
             }
+            file_size_bytes = match file.metadata() {
+                Ok(metadata) => metadata.len(),
+                Err(_) => 0,
+            };
         }
         Err(err) => {
             eprintln!("Error opening file: {}", err);
@@ -43,6 +48,8 @@ fn main() {
         println!("{}: {}", class_name, count);
     }
 
-    // Print the total count
+    // Print the total count and file details
     println!("Total Unique Classes: {}", class_counts.len());
+    println!("CSS File: {}", file_path);
+    println!("File Size: {} bytes", file_size_bytes);
 }
