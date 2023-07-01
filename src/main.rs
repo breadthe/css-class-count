@@ -43,13 +43,43 @@ fn main() {
     }
 
     // Print the unique classes and their counts
-    println!("Class Counts:");
+    println!("Class Counts");
+    println!("----------------------------------------");
     for (class_name, count) in &class_counts {
         println!("{}: {}", class_name, count);
     }
 
     // Print the total count and file details
+    println!("----------------------------------------");
     println!("Total Unique Classes: {}", class_counts.len());
-    println!("CSS File: {}", file_path);
-    println!("File Size: {} bytes", file_size_bytes);
+    println!("Full Path: {}", file_path);
+    println!("CSS File: {}", get_file_name(file_path));
+    println!("File Size: {} ({} bytes)", format_file_size(file_size_bytes), file_size_bytes);
+}
+
+fn get_file_name(file_path: &str) -> &str {
+    if let Some(file_name) = file_path.rsplit('/').next() {
+        file_name
+    } else {
+        file_path
+    }
+}
+
+fn format_file_size(file_size_bytes: u64) -> String {
+    const KB: u64 = 1024;
+    const MB: u64 = 1024 * KB;
+    const GB: u64 = 1024 * MB;
+    const TB: u64 = 1024 * GB;
+
+    if file_size_bytes >= TB {
+        format!("{:.2} TB", file_size_bytes as f64 / TB as f64)
+    } else if file_size_bytes >= GB {
+        format!("{:.2} GB", file_size_bytes as f64 / GB as f64)
+    } else if file_size_bytes >= MB {
+        format!("{:.2} MB", file_size_bytes as f64 / MB as f64)
+    } else if file_size_bytes >= KB {
+        format!("{:.2} KB", file_size_bytes as f64 / KB as f64)
+    } else {
+        format!("{} bytes", file_size_bytes)
+    }
 }
